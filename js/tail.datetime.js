@@ -83,6 +83,18 @@
         (reset)? date.setHours(0, 0, 0, 0): date;
         return (time === true)? date.getTime(): date;
     }
+    function formatDate(inDateStr, inFormat){
+        inFormat = inFormat.toLowerCase();
+        var json = {
+            "day" : [inFormat.indexOf("d"), inFormat.lastIndexOf("d")],
+            "month" : [inFormat.indexOf("m"), inFormat.lastIndexOf("m")],
+            "year" : [inFormat.indexOf("y"), inFormat.lastIndexOf("y")]
+        };
+        json.day = parseInt(inDateStr.substring(json.day[0], json.day[1]+1));
+        json.month = parseInt(inDateStr.substring(json.month[0], json.month[1]+1)) - 1; // to [0..11]
+        json.year = parseInt(inDateStr.substring(json.year[0], json.year[1]+1));
+        return new Date(json.year + json.month + json.day + inDateStr.split(" ")[1]);
+    }
 
     /*
      |  CONSTRUCTOR
@@ -215,7 +227,7 @@
             this.weekdays += "\n</tr>\n</thead>"
 
             // Init Select
-            this.select = parse(this.e.getAttribute("data-value") || this.e.value);
+            this.select = parse(formatDate(this.e.getAttribute("data-value") || this.e.value, this.con.dateFormat));
             if(!this.select || this.select < this.con.dateStart || this.select > this.con.dateEnd){
                 this.select = null;
             }
